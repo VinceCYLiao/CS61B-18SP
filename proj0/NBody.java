@@ -1,4 +1,4 @@
-class NBody {
+public class NBody {
     public static void main(String[] args) {
         double T = Double.parseDouble(args[0]);
         double dt = Double.parseDouble(args[1]);
@@ -55,5 +55,8 @@ class NBody {
             arr[i] = new Planet(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble(), in.readString());
         }
         return arr;
+    }
+
+    public NBody() {
     }
 }

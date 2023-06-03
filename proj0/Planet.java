@@ -1,4 +1,4 @@
-class Planet {
+public class Planet {
     public double xxPos;
     public double yyPos;
     public double xxVel;
@@ -80,5 +80,8 @@ class Planet {
         this.yyVel = this.yyVel + dt * ay;
         this.xxPos = this.xxPos + dt * this.xxVel;
         this.yyPos = this.yyPos + dt * this.yyVel;
+    }
+
+    public void draw() {
     }
 }
