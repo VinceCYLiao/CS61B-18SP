@@ -81,15 +81,15 @@ public class IntList {
      */
 
     public static IntList dcatenate(IntList A, IntList B) {
-        IntList lastNodeOfA = A;
-        while (lastNodeOfA != null && lastNodeOfA.rest != null) {
-            lastNodeOfA = lastNodeOfA.rest;
-        }
-        if(lastNodeOfA == null) {
+        if(A == null) {
             return B;
-        } else {
-            lastNodeOfA.rest = B;
         }
+        IntList pointer = A;
+        while(pointer.rest != null) {
+            pointer = pointer.rest;
+        }
+
+        pointer.rest = B;
 
         return A;
     }
@@ -99,33 +99,19 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        if(A == null && B == null) {
-            return null;
+        if(A == null) {
+            return B;
         }
-        IntList node = null;
-        IntList target = null;
-        IntList nextA = A;
+        IntList node = new IntList(A.first, null);
+        IntList pointer = node;
+        IntList nextA = A.rest;
         while(nextA != null) {
-            IntList newNode = new IntList(nextA.first, null);
-            if(node == null) {
-                node = newNode;
-            } else {
-                target.rest = newNode;
-            }
-            target = newNode;
+            IntList nextNode = new IntList(nextA.first, null);
+            pointer.rest = nextNode;
+            pointer = nextNode;
             nextA = nextA.rest;
         }
-        IntList nextB = B;
-        while(nextB != null) {
-            IntList newNode = new IntList(nextB.first, null);
-            if(node == null) {
-                node = newNode;
-            } else {
-                target.rest = newNode;
-            }
-            target = newNode;
-            nextB = nextB.rest;
-        }
+        pointer.rest = B;
         return node;
     }
 
