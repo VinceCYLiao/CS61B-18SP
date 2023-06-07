@@ -82,10 +82,15 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         IntList lastNodeOfA = A;
-        while (lastNodeOfA.rest != null) {
+        while (lastNodeOfA != null && lastNodeOfA.rest != null) {
             lastNodeOfA = lastNodeOfA.rest;
         }
-        lastNodeOfA.rest = B;
+        if(lastNodeOfA == null) {
+            return B;
+        } else {
+            lastNodeOfA.rest = B;
+        }
+
         return A;
     }
 
@@ -94,26 +99,35 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        IntList node = new IntList(A.first, null);
-        IntList target = node;
-        IntList nextA = A.rest;
-        do {
-            IntList nextNode = new IntList(nextA.first, null);
-            target.rest = nextNode;
-            target = nextNode;
+        if(A == null && B == null) {
+            return null;
+        }
+        IntList node = null;
+        IntList target = null;
+        IntList nextA = A;
+        while(nextA != null) {
+            IntList newNode = new IntList(nextA.first, null);
+            if(node == null) {
+                node = newNode;
+            } else {
+                target.rest = newNode;
+            }
+            target = newNode;
             nextA = nextA.rest;
-        } while (nextA != null);
+        }
         IntList nextB = B;
-        do {
-            IntList nextNode = new IntList(nextB.first, null);
-            target.rest = nextNode;
-            target = nextNode;
+        while(nextB != null) {
+            IntList newNode = new IntList(nextB.first, null);
+            if(node == null) {
+                node = newNode;
+            } else {
+                target.rest = newNode;
+            }
+            target = newNode;
             nextB = nextB.rest;
-        } while (nextB != null);
+        }
         return node;
     }
-
-
 
     /**
      * DO NOT MODIFY ANYTHING BELOW THIS LINE! Many of the concepts below here
