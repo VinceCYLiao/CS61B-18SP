@@ -5,7 +5,7 @@ import java.util.Formatter;
  * with a large number of additional methods.
  *
  * @author P. N. Hilfinger, with some modifications by Josh Hug and melaniecebula
- *         [Do not modify this file.]
+ * [Do not modify this file.]
  */
 public class IntList {
     /**
@@ -29,7 +29,7 @@ public class IntList {
      * A List with null rest, and first = 0.
      */
     public IntList() {
-    /* NOTE: public IntList () { }  would also work. */
+        /* NOTE: public IntList () { }  would also work. */
         this(0, null);
     }
 
@@ -81,15 +81,12 @@ public class IntList {
      */
 
     public static IntList dcatenate(IntList A, IntList B) {
-        //TODO:  fill in method
-       while(A.rest != null) {
-           A = A.rest;
-       }
-       do {
-           A.rest = B;
-           B = B.rest;
-       } while (B.rest != null);
-       return A;
+        IntList lastNodeOfA = A;
+        while (lastNodeOfA.rest != null) {
+            lastNodeOfA = lastNodeOfA.rest;
+        }
+        lastNodeOfA.rest = B;
+        return A;
     }
 
     /**
@@ -97,31 +94,24 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        //TODO:  fill in method
-       IntList node;
-       do {
-           node = A;
-           A = A.rest;
-       } while (A.rest != null);
-      do {
-          node = B;
-          B = B.rest;
-      } while (B.rest != null);
-      return node;
+        IntList node = new IntList(A.first, null);
+        IntList target = node;
+        IntList nextA = A.rest;
+        do {
+            IntList nextNode = new IntList(nextA.first, null);
+            target.rest = nextNode;
+            target = nextNode;
+            nextA = nextA.rest;
+        } while (nextA != null);
+        IntList nextB = B;
+        do {
+            IntList nextNode = new IntList(nextB.first, null);
+            target.rest = nextNode;
+            target = nextNode;
+            nextB = nextB.rest;
+        } while (nextB != null);
+        return node;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
