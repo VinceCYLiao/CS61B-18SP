@@ -51,6 +51,9 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
+        if (this.size == 0) {
+            return null;
+        }
         if (needReduceSize()) {
             reduceArraySize();
         }
@@ -63,6 +66,9 @@ public class ArrayDeque<T> {
     }
 
     public T removeLast() {
+        if (this.size == 0) {
+            return null;
+        }
         T lastItem = this.arr[this.size - 1];
         this.arr[this.size - 1] = null;
         this.size -= 1;
