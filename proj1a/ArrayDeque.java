@@ -19,7 +19,7 @@ public class ArrayDeque<T> {
         this.arraySize = arraySize;
         T[] newArray = (T[]) new Object[this.arraySize];
         // handle resize when array is full
-        if(this.size == this.arr.length) {
+        if (this.size == this.arr.length) {
             System.arraycopy(this.arr, this.first, newArray, 0, this.size - this.first);
             if (this.first != 0) {
                 System.arraycopy(this.arr, 0, newArray, this.size - this.first, this.first);
@@ -57,7 +57,7 @@ public class ArrayDeque<T> {
         if (this.size == this.arraySize) {
             resize(this.arraySize * 2);
         }
-        if(this.size >= 1) {
+        if (this.size >= 1) {
             recalculateFirst();
         }
         this.arr[first] = item;
@@ -69,7 +69,7 @@ public class ArrayDeque<T> {
         if (this.size == this.arraySize) {
             resize(this.arraySize * 2);
         }
-        if(this.size >= 1) {
+        if (this.size >= 1) {
             recalculateLast();
         }
         this.arr[last] = item;
@@ -85,7 +85,7 @@ public class ArrayDeque<T> {
         if (isEmpty()) {
             return;
         }
-        if(this.first < this.last) {
+        if (this.first < this.last) {
             for (int i = this.first; i <= this.last; i++) {
                 System.out.print(this.arr[i]);
                 System.out.print(" ");
@@ -136,11 +136,11 @@ public class ArrayDeque<T> {
     }
 
     public T get(int index) {
-        if(index >= this.arraySize) {
+        if (index >= this.arraySize) {
             return null;
         }
         int actualIndex = this.first + index;
-        if(actualIndex == this.arr.length) {
+        if (actualIndex == this.arr.length) {
             actualIndex = actualIndex - this.arr.length;
         }
         return this.arr[actualIndex];
