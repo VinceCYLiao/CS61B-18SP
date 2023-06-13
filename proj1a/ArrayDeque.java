@@ -140,9 +140,35 @@ public class ArrayDeque<T> {
             return null;
         }
         int actualIndex = this.first + index;
-        if (actualIndex == this.arr.length) {
+        if (actualIndex >= this.arr.length) {
             actualIndex = actualIndex - this.arr.length;
         }
         return this.arr[actualIndex];
+    }
+
+    public static void main(String[] args) {
+        ArrayDeque a = new ArrayDeque();
+        a.addFirst(0);
+        a.removeLast();//    ==> 0
+        a.addLast(2);
+        a.addFirst(3);
+        a.removeLast();//      ==> 2
+        a.removeLast();//      ==> 3
+        a.addLast(6);
+        a.addLast(7);
+        a.addLast(8);
+        a.removeLast();//      ==> 8
+        a.removeLast();//     ==> 7
+        a.removeFirst();//    ==> 6
+        a.addLast(12);
+        a.addLast(13);
+        a.addFirst(14);
+        a.get(0);//      ==> 14
+        a.removeFirst();//     ==> 14
+        a.addFirst(17);
+        a.addLast(18);
+        a.addFirst(19);
+        a.get(3);//      ==> 13
+        a.get(4);
     }
 }
