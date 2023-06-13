@@ -106,7 +106,7 @@ public class LinkedListDeque<T> {
     }
 
     public T get(int index) {
-        if (index >= size) {
+        if (index >= this.size) {
             return null;
         }
         Node targetNode;
@@ -115,5 +115,20 @@ public class LinkedListDeque<T> {
             index--;
         } while (index != -1);
         return targetNode.value;
+    }
+
+    public T getRecursive(int index) {
+        if (index >= this.size) {
+            return null;
+        }
+        return recursivelyFindTargetNodeValue(index, this.sentinel.next);
+    }
+
+    private T recursivelyFindTargetNodeValue(int index, Node node) {
+        if (index == 0) {
+            return node.value;
+        } else {
+            return recursivelyFindTargetNodeValue(index - 1, node.next);
+        }
     }
 }
