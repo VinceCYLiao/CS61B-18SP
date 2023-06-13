@@ -109,11 +109,12 @@ public class LinkedListDeque<T> {
         if (index >= this.size) {
             return null;
         }
-        Node targetNode;
-        do {
-            targetNode = this.sentinel.next;
-            index--;
-        } while (index != -1);
+        Node targetNode = this.sentinel.next;
+        while (index != 0) {
+            index -= 1;
+            targetNode = targetNode.next;
+        }
+
         return targetNode.value;
     }
 
