@@ -139,6 +139,10 @@ public class ArrayDeque<T> {
         if(index >= this.arraySize) {
             return null;
         }
-        return this.arr[index];
+        int actualIndex = this.first + index;
+        if(actualIndex == this.arr.length) {
+            actualIndex = actualIndex - this.arr.length;
+        }
+        return this.arr[actualIndex];
     }
 }
