@@ -1,5 +1,4 @@
 public class ArrayDeque<T> {
-    private int arraySize = 8;
     private int size = 0;
     private T[] arr;
     private int first;
@@ -8,16 +7,15 @@ public class ArrayDeque<T> {
     private static final double USAGE_RATIO = 0.25;
 
     public ArrayDeque() {
-        this.arr = (T[]) new Object[this.arraySize];
+        this.arr = (T[]) new Object[8];
     }
 
     public int size() {
         return this.size;
     }
 
-    private void resize(int arraySize) {
-        this.arraySize = arraySize;
-        T[] newArray = (T[]) new Object[this.arraySize];
+    private void resize(int newSize) {
+        T[] newArray = (T[]) new Object[newSize];
         // handle resize when array is full
         if (this.size == this.arr.length) {
             System.arraycopy(this.arr, this.first, newArray, 0, this.size - this.first);
@@ -40,22 +38,22 @@ public class ArrayDeque<T> {
     }
 
     private boolean shouldReduceArraySize() {
-        return this.arraySize > 16 && ((double) this.size / this.arraySize) < USAGE_RATIO;
+        return this.arr.length > 16 && ((double) this.size / this.arr.length) < USAGE_RATIO;
     }
 
     private void recalculateFirst() {
         int nextFirst = this.first - 1;
-        this.first = nextFirst < 0 ? this.arraySize - 1 : nextFirst;
+        this.first = nextFirst < 0 ? this.arr.length - 1 : nextFirst;
     }
 
     private void recalculateLast() {
         int nextLast = this.last + 1;
-        this.last = nextLast == this.arraySize ? 0 : nextLast;
+        this.last = nextLast == this.arr.length ? 0 : nextLast;
     }
 
     public void addFirst(T item) {
-        if (this.size == this.arraySize) {
-            resize(this.arraySize * 2);
+        if (this.size == this.arr.length) {
+            resize(this.arr.length * 2);
         }
         if (this.size >= 1) {
             recalculateFirst();
@@ -66,8 +64,8 @@ public class ArrayDeque<T> {
     }
 
     public void addLast(T item) {
-        if (this.size == this.arraySize) {
-            resize(this.arraySize * 2);
+        if (this.size == this.arr.length) {
+            resize(this.arr.length * 2);
         }
         if (this.size >= 1) {
             recalculateLast();
@@ -136,7 +134,7 @@ public class ArrayDeque<T> {
     }
 
     public T get(int index) {
-        if (index >= this.arraySize) {
+        if (index >= this.arr.length) {
             return null;
         }
         int actualIndex = this.first + index;
@@ -144,31 +142,5 @@ public class ArrayDeque<T> {
             actualIndex = actualIndex - this.arr.length;
         }
         return this.arr[actualIndex];
-    }
-
-    public static void main(String[] args) {
-        ArrayDeque a = new ArrayDeque();
-        a.addFirst(0);
-        a.removeLast();//    ==> 0
-        a.addLast(2);
-        a.addFirst(3);
-        a.removeLast();//      ==> 2
-        a.removeLast();//      ==> 3
-        a.addLast(6);
-        a.addLast(7);
-        a.addLast(8);
-        a.removeLast();//      ==> 8
-        a.removeLast();//     ==> 7
-        a.removeFirst();//    ==> 6
-        a.addLast(12);
-        a.addLast(13);
-        a.addFirst(14);
-        a.get(0);//      ==> 14
-        a.removeFirst();//     ==> 14
-        a.addFirst(17);
-        a.addLast(18);
-        a.addFirst(19);
-        a.get(3);//      ==> 13
-        a.get(4);
     }
 }
