@@ -1,7 +1,7 @@
 public class LinkedListDeque<T> {
-    static class Node<T> {
-        Node<T> prev;
-        Node<T> next;
+    class Node {
+        Node prev;
+        Node next;
         T value;
 
         public Node(T value) {
@@ -18,16 +18,16 @@ public class LinkedListDeque<T> {
     }
 
 
-    private final Node<T> sentinel;
+    private final Node sentinel;
     private int size;
 
     public LinkedListDeque() {
-        this.sentinel = new Node<>();
+        this.sentinel = new Node();
     }
 
     public void addFirst(T item) {
-        Node<T> originalNextPointer = this.sentinel.next;
-        Node<T> newNode = new Node<>(item);
+        Node originalNextPointer = this.sentinel.next;
+        Node newNode = new Node(item);
         this.sentinel.next = newNode;
         newNode.prev = this.sentinel;
         if (originalNextPointer == null) {
@@ -41,8 +41,8 @@ public class LinkedListDeque<T> {
     }
 
     public void addLast(T item) {
-        Node<T> newNode = new Node<>(item);
-        Node<T> originalLastNode = this.sentinel.prev;
+        Node newNode = new Node(item);
+        Node originalLastNode = this.sentinel.prev;
         this.sentinel.prev = newNode;
         newNode.next = this.sentinel;
         if (originalLastNode == null) {
@@ -64,7 +64,7 @@ public class LinkedListDeque<T> {
     }
 
     public void printDeque() {
-        Node<T> node = this.sentinel.next;
+        Node node = this.sentinel.next;
         while (node != null && node != this.sentinel) {
             System.out.print(node.value);
             System.out.print(" ");
@@ -74,7 +74,7 @@ public class LinkedListDeque<T> {
     }
 
     public T removeFirst() {
-        Node<T> firstNode = this.sentinel.next;
+        Node firstNode = this.sentinel.next;
         if (firstNode == null) {
             return null;
         }
@@ -90,7 +90,7 @@ public class LinkedListDeque<T> {
     }
 
     public T removeLast() {
-        Node<T> originalLastNode = this.sentinel.prev;
+        Node originalLastNode = this.sentinel.prev;
         if (originalLastNode == null) {
             return null;
         }
@@ -109,7 +109,7 @@ public class LinkedListDeque<T> {
         if (index >= size) {
             return null;
         }
-        Node<T> targetNode;
+        Node targetNode;
         do {
             targetNode = this.sentinel.next;
             index--;
