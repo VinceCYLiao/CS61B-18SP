@@ -1,3 +1,5 @@
+import java.util.regex.Pattern;
+
 public class Palindrome {
 
     public Palindrome() {
@@ -23,8 +25,15 @@ public class Palindrome {
     }
 
     public boolean isPalindrome(String word, CharacterComparator cc) {
-        Deque<Character> d = this.wordToDeque(word);
+        word = word.toLowerCase();
         int length = word.length();
+        if (length == 0) {
+            return true;
+        }
+        if (!Pattern.matches("\\d+", word) && !Pattern.matches("[a-z]+", word)) {
+            return false;
+        }
+        Deque<Character> d = this.wordToDeque(word);
         for (int i = 0; i < length; i++) {
             if (length % 2 != 0 && i == length / 2) {
                 d.removeLast();
