@@ -7,8 +7,6 @@ interface Deque<T> {
         return size() == 0;
     }
 
-    ;
-
     public int size();
 
     public void printDeque();

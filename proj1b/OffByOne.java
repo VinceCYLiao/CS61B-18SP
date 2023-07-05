@@ -1,4 +1,7 @@
-class OffByOne implements CharacterComparator {
+public class OffByOne implements CharacterComparator {
+
+    public OffByOne() {
+    }
 
     /**
      * returns true for characters that are different by exactly one.
