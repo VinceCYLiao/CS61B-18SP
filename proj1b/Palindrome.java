@@ -17,29 +17,24 @@ public class Palindrome {
     public boolean isPalindrome(String word) {
         Deque<Character> d = this.wordToDeque(word);
 
-        String backward = "";
-        while (d.size() != 0) {
-            backward += d.removeLast();
+        int size = d.size();
+        for (int i = 0; i < size / 2; i++) {
+            char front = d.removeFirst();
+            char back = d.removeLast();
+            if (front != back) {
+                return false;
+            }
         }
-        return backward.equals(word);
+        return true;
     }
 
     public boolean isPalindrome(String word, CharacterComparator cc) {
-        word = word.toLowerCase();
-        int length = word.length();
-        if (length == 0) {
-            return true;
-        }
-        if (!Pattern.matches("\\d+", word) && !Pattern.matches("[a-z]+", word)) {
-            return false;
-        }
         Deque<Character> d = this.wordToDeque(word);
-        for (int i = 0; i < length; i++) {
-            if (length % 2 != 0 && i == length / 2) {
-                d.removeLast();
-                continue;
-            }
-            if (!cc.equalChars(word.charAt(i), d.removeLast())) {
+        int size = d.size();
+        for (int i = 0; i < size / 2; i++) {
+            char front = d.removeFirst();
+            char back = d.removeLast();
+            if (!cc.equalChars(front, back)) {
                 return false;
             }
         }
