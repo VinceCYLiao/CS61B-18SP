@@ -60,11 +60,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return this.rb[this.first];
     }
 
-    @Override
-    void moveTo(double deltaX, double deltaY) {
-
-    }
-
     private class ArrayRingBufferIterator implements Iterator<T> {
 
         private int count;

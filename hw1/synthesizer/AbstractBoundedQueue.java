@@ -11,6 +11,4 @@ public abstract class AbstractBoundedQueue<T> implements BoundedQueue<T> {
     public int fillCount() {
         return this.fillCount;
     }
-
-    abstract void moveTo(double deltaX, double deltaY);
 }
