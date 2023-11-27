@@ -168,8 +168,10 @@ public class Game {
             }
         }
 
-        while (rooms.toArray().length != MAX_ROOM) {
+        int trial = 0;
+        while (rooms.toArray().length != MAX_ROOM && trial != 100) {
             Room room = new Room();
+            trial++;
             if (!room.isRoomOverlappedOrOutOfBound()) {
                 rooms.add(room);
                 room.putRoomIntoWorld();
@@ -308,6 +310,7 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
+        System.out.println(input);
         char gameMode = Character.toLowerCase(input.charAt(0));
         char lastChar = Character.toLowerCase(input.charAt(input.length() - 1));
         if (gameMode == 'n' && lastChar == 's') {
