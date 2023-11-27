@@ -162,9 +162,6 @@ public class Game {
 
 
     public void renderWorld(boolean playWithKeyboard) {
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 world[i][j] = Tileset.NOTHING;
@@ -185,7 +182,9 @@ public class Game {
 
         buildHallways();
 
-        if (!playWithKeyboard) {
+        if (playWithKeyboard) {
+            TERenderer ter = new TERenderer();
+            ter.initialize(WIDTH, HEIGHT);
             ter.renderFrame(this.world);
         }
 
@@ -292,7 +291,7 @@ public class Game {
      */
     public void playWithKeyboard() {
         this.showGameMenu();
-        this.renderWorld(false);
+        this.renderWorld(true);
     }
 
     /**
@@ -309,15 +308,13 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        int index = 1;
-        StringBuilder seed = new StringBuilder();
-        int currentChar = input.charAt(index);
-        while (currentChar != 'S' && currentChar != 's') {
-            seed.append(currentChar);
-            currentChar = input.charAt(++index);
+        char gameMode = Character.toLowerCase(input.charAt(0));
+        char lastChar = Character.toLowerCase(input.charAt(input.length() - 1));
+        if (gameMode == 'n' && lastChar == 's') {
+            String seed = input.substring(1, input.length() - 1);
+            this.rand = new Random(Long.parseLong(seed));
+            this.renderWorld(false);
         }
-        this.rand = new Random(Integer.parseInt(seed.toString()));
-        this.renderWorld(true);
         return this.world;
     }
 
