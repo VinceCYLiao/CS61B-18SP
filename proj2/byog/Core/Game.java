@@ -5,7 +5,8 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -98,13 +99,13 @@ public class Game {
         private int roomWidth;
         private int roomHeight;
         private Position position;
-        private static final int maxRoomWidth = 30;
-        private static final int maxRoomHeight = 30;
+        private static final int MAX_ROOM_WIDTH = 30;
+        private static final int MAX_ROOM_HEIGHT = 30;
 
         public Room() {
             this.position = new Position(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
-            this.roomWidth = rand.nextInt(maxRoomWidth - 5) + 5;
-            this.roomHeight = rand.nextInt(maxRoomHeight - 5) + 5;
+            this.roomWidth = rand.nextInt(MAX_ROOM_WIDTH - 5) + 5;
+            this.roomHeight = rand.nextInt(MAX_ROOM_HEIGHT - 5) + 5;
         }
 
         public void putRoomIntoWorld() {
@@ -129,7 +130,9 @@ public class Game {
                 for (int j = -ROOM_PADDING; j < this.roomHeight + ROOM_PADDING; j++) {
                     int y = position.y + j;
                     // out of bound
-                    if (x >= WIDTH - WORLD_PADDING || y >= HEIGHT - WORLD_PADDING || x < WORLD_PADDING || y < WORLD_PADDING) {
+                    if (
+                            x >= WIDTH - WORLD_PADDING || y >= HEIGHT - WORLD_PADDING || x < WORLD_PADDING || y < WORLD_PADDING
+                    ) {
                         return true;
                     }
                     // overlap
@@ -144,20 +147,11 @@ public class Game {
         public Position randomInnerPoint() {
             int x = this.position.x;
             int y = this.position.y;
-            return new Position(rand.nextInt(this.roomWidth - 2) + 1 + x, rand.nextInt(this.roomHeight - 2) + 1 + y);
+            return new Position(
+                    rand.nextInt(this.roomWidth - 2) + 1 + x,
+                    rand.nextInt(this.roomHeight - 2) + 1 + y
+            );
         }
-
-        @Override
-        public String toString() {
-            return "Room{" +
-                    "width=" + roomWidth +
-                    ", height=" + roomHeight +
-                    ", positionX=" + position.x +
-                    ", positionY=" + position.y +
-                    '}';
-        }
-
-
     }
 
 
@@ -185,7 +179,6 @@ public class Game {
         buildHallways();
 
         if (playWithKeyboard) {
-            TERenderer ter = new TERenderer();
             ter.initialize(WIDTH, HEIGHT);
             ter.renderFrame(this.world);
         }
