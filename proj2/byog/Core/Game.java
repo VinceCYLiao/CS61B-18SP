@@ -1,12 +1,15 @@
 package byog.Core;
 
+import byog.Player;
+import byog.Position;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,12 +20,27 @@ public class Game {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 50;
     private static final int MAX_ROOM = 15;
-    private static final int WORLD_PADDING = 0;
+    private static final int WORLD_PADDING = 3;
     private static final int ROOM_PADDING = 2;
-    private TETile[][] world = new TETile[WIDTH][HEIGHT];
+    private static final int MAX_TRAIL = 500;
+    private static final int WORLD_WIDTH = WIDTH - WORLD_PADDING * 2;
+    private static final int WORLD_HEIGHT = HEIGHT - WORLD_PADDING * 2;
+    private TETile[][] world = new TETile[WORLD_WIDTH][WORLD_HEIGHT];
     private Random rand;
     private final ArrayList<Room> rooms = new ArrayList<>();
     private final ArrayList<ArrayList<Position>> hallways = new ArrayList<>();
+
+    private Player player;
+    private static final String SAVE_FILE_NAME = "save.txt";
+    private static class GameData implements Serializable {
+        TETile[][] world;
+        Player player;
+
+        public GameData(TETile[][] world, Player player) {
+            this.world = world;
+            this.player = player;
+        }
+    }
 
     private void createHallwayBetweenRooms(Room room1, Room room2) {
         Position start = room1.randomInnerPoint();
@@ -79,22 +97,6 @@ public class Game {
         hallways.forEach(hallway -> hallway.forEach(this::buildHallway));
     }
 
-    private static class Position {
-        private int x;
-        private int y;
-
-        public Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public String toString() {
-            return "x: " + this.x + ", y:" + this.y;
-        }
-    }
-
-
     private class Room {
         private int roomWidth;
         private int roomHeight;
@@ -125,13 +127,13 @@ public class Game {
         }
 
         public boolean isRoomOverlappedOrOutOfBound() {
-            for (int i = -ROOM_PADDING; i < this.roomWidth + ROOM_PADDING; i++) {
+            for (int i = 0; i < this.roomWidth; i++) {
                 int x = position.x + i;
-                for (int j = -ROOM_PADDING; j < this.roomHeight + ROOM_PADDING; j++) {
+                for (int j = 0; j < this.roomHeight; j++) {
                     int y = position.y + j;
                     // out of bound
                     if (
-                            x >= WIDTH - WORLD_PADDING || y >= HEIGHT - WORLD_PADDING || x < WORLD_PADDING || y < WORLD_PADDING
+                            x >= WORLD_WIDTH || y >= WORLD_HEIGHT || x < 0 || y < 0
                     ) {
                         return true;
                     }
@@ -156,14 +158,14 @@ public class Game {
 
 
     public void renderWorld(boolean playWithKeyboard) {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+        for (int i = 0; i < WORLD_WIDTH; i++) {
+            for (int j = 0; j < WORLD_HEIGHT; j++) {
                 world[i][j] = Tileset.NOTHING;
             }
         }
 
         int trial = 0;
-        while (rooms.toArray().length != MAX_ROOM && trial != 100) {
+        while (rooms.toArray().length != MAX_ROOM && trial != MAX_TRAIL) {
             Room room = new Room();
             trial++;
             if (!room.isRoomOverlappedOrOutOfBound()) {
@@ -179,7 +181,7 @@ public class Game {
         buildHallways();
 
         if (playWithKeyboard) {
-            ter.initialize(WIDTH, HEIGHT);
+            ter.initialize(WIDTH, HEIGHT, WORLD_PADDING, WORLD_PADDING);
             ter.renderFrame(this.world);
         }
 
@@ -276,9 +278,41 @@ public class Game {
 
             }
             this.rand = new Random(Integer.parseInt(seed.toString()));
-
+            this.renderWorld(true);
+            this.player = new Player(this.world, ter, true, this.rand);
         }
+        if (action.equals(MenuActions.LOAD_GAME)) {
+            GameData data = deserializeObject(SAVE_FILE_NAME);
+            this.world = data.world;
+            this.player = data.player;
+            ter.initialize(WIDTH, HEIGHT, WORLD_PADDING, WORLD_PADDING);
+            ter.renderFrame(this.world);
+        }
+    }
 
+    private void drawHUD(String content) {
+        ter.renderFrame(this.world);
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.textLeft(0, 3, content);
+        StdDraw.show();
+    }
+
+    private void handleOperation(char operation) {
+        if (Character.toLowerCase(operation) == 'd') {
+            this.player.moveRight();
+        }
+        if (Character.toLowerCase(operation) == 'a') {
+            this.player.moveLeft();
+        }
+        if (Character.toLowerCase(operation) == 'w') {
+            this.player.moveUp();
+        }
+        if (Character.toLowerCase(operation) == 's') {
+            this.player.moveDown();
+        }
+        if (Character.toLowerCase(operation) == 'q') {
+            serializeObject(new GameData(this.world, this.player), SAVE_FILE_NAME);
+        }
     }
 
     /**
@@ -286,7 +320,17 @@ public class Game {
      */
     public void playWithKeyboard() {
         this.showGameMenu();
-        this.renderWorld(true);
+
+        while (true) {
+            if (StdDraw.hasNextKeyTyped()) {
+                char c = StdDraw.nextKeyTyped();
+                handleOperation(c);
+                if (Character.toLowerCase(c) == 'q') {
+                    System.exit(1);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -303,15 +347,49 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        System.out.println(input);
-        char gameMode = Character.toLowerCase(input.charAt(0));
-        char lastChar = Character.toLowerCase(input.charAt(input.length() - 1));
-        if (gameMode == 'n' && lastChar == 's') {
-            String seed = input.substring(1, input.length() - 1);
-            this.rand = new Random(Long.parseLong(seed));
-            this.renderWorld(false);
+        input = input.toUpperCase();
+        MenuActions gameMode = MenuActions.getMenuAction(input.charAt(0));
+        if (gameMode != null) {
+            int seedEndIndex = input.indexOf('S');
+            if (gameMode.equals(MenuActions.NEW_GAME)) {
+                String seed = input.substring(1, seedEndIndex);
+                String operations = input.substring(seedEndIndex + 1);
+                this.rand = new Random(Long.parseLong(seed));
+                this.renderWorld(false);
+                this.player = new Player(this.world, this.ter, false, this.rand);
+                for (char operation : operations.toCharArray()) {
+                    handleOperation(operation);
+                }
+            }
+            if (gameMode.equals(MenuActions.LOAD_GAME)) {
+                GameData data = deserializeObject(SAVE_FILE_NAME);
+                this.world = data.world;
+                this.player = data.player;
+                String operations = input.substring(1);
+                for (char operation : operations.toCharArray()) {
+                    handleOperation(operation);
+                }
+            }
         }
+
         return this.world;
     }
 
+    private static void serializeObject(GameData obj, String fileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(obj);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static GameData deserializeObject(String fileName) {
+        GameData deserializedObj = null;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            deserializedObj = (GameData) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return deserializedObj;
+    }
 }
